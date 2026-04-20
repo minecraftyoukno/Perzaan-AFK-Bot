@@ -388,29 +388,32 @@ function createBot() {
     }, 60000);
 
     bot.once('spawn', () => {
-      clearTimeout(connectionTimeout);
-      botState.connected = true;
-      botState.lastActivity = Date.now();
-      botState.reconnectAttempts = 0;
-      isReconnecting = false;
+  clearTimeout(connectionTimeout);
+  botState.connected = true;
+  botState.lastActivity = Date.now();
+  botState.reconnectAttempts = 0;
+  isReconnecting = false;
 
-      console.log(`[Bot] [+] Successfully spawned on server!`);
-      if (config.discord && config.discord.events.connect) {
-        sendDiscordWebhook(`[+] **Connected** to \`${config.server.ip}\``, 0x4ade80); // Green
-      }
+  console.log(`[Bot] [+] Successfully spawned on server!`);
 
-      const mcData = require('minecraft-data')(config.server.version);
-      const defaultMove = new Movements(bot, mcData);
-      defaultMove.allowFreeMotion = false;
-      defaultMove.canDig = false;
-      defaultMove.liquidCost = 1000;
-      defaultMove.fallDamageCost = 1000;
+  // 🔐 FORCE LOGIN SYSTEM (Perzaan Edition)
+  setTimeout(() => {
+    if (bot && botState.connected) {
+      bot.chat('/login Perzuu')
+      console.log('[Auth] Forced login command sent')
+    }
+  }, 3000)
 
-      // Start all modules
-      initializeModules(bot, mcData, defaultMove);
+  if (config.discord && config.discord.events.connect) {
+    sendDiscordWebhook(`[+] **Connected** to \`${config.server.ip}\``, 0x4ade80);
+  }
 
-      // Setup enhanced Leave/Rejoin logic
-      setupLeaveRejoin(bot, createBot);
+  const mcData = require('minecraft-data')(config.server.version);
+  const defaultMove = new Movements(bot, mcData);
+
+  initializeModules(bot, mcData, defaultMove);
+  setupLeaveRejoin(bot, createBot);
+});
 
       setTimeout(() => {
         if (bot && botState.connected) {
