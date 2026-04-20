@@ -404,6 +404,20 @@ function createBot() {
     }
   }, 3000)
 
+      bot.on('messagestr', (msg) => {
+    const message = msg.toLowerCase()
+
+    if (message.includes("login")) {
+      bot.chat('/login Perzuu')
+      console.log('[Auth] Login detected')
+    }
+
+    if (message.includes("register")) {
+      bot.chat('/register Perzuu Perzuu')
+      console.log('[Auth] Register detected')
+    }
+  })
+      
   if (config.discord && config.discord.events.connect) {
     sendDiscordWebhook(`[+] **Connected** to \`${config.server.ip}\``, 0x4ade80);
   }
